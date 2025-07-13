@@ -1,77 +1,108 @@
 "use client";
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function EditProfile() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [skills, setSkills] = useState([{ name: "", level: "" }]);
+  const [universityName, setUniversityName] = useState("");
+  const [courseName, setCourseName] = useState("");
   const [experience, setExperience] = useState([
-    { title: "", company: "", description: "" },
+    { title: "", company: "", years: 0, description: "" },
   ]);
+  const [skills, setSkills] = useState([{ name: "", level: "" }]);
+  const [LinkedInID, setLinkedInID] = useState("");
+  const [GithubID, setGithubID] = useState("");
   const [projects, setProjects] = useState([
-    { title: "", link: "", description: "" },
+    { title: "", description: "", link: "" },
   ]);
 
-  const inputStyle = {
-    backgroundColor: "#f3e2eb",
+  const handleExperienceChange = (index, event) => {
+    const newExperience = [...experience];
+    newExperience[index][event.target.name] = event.target.value;
+    setExperience(newExperience);
+  };
+  const addExperience = () => {
+    setExperience([
+      ...experience,
+      { title: "", company: "", years: 0, description: "" },
+    ]);
+  };
+  const removeExperience = (index) => {
+    const newExperience = experience.filter((_, i) => i !== index);
+    setExperience(newExperience);
   };
 
-  // Skills Handlers
-  const handleAddSkill = () => {
+  const handleSkillChange = (index, event) => {
+    const newSkills = [...skills];
+    newSkills[index][event.target.name] = event.target.value;
+    setSkills(newSkills);
+  };
+  const addSkills = () => {
     setSkills([...skills, { name: "", level: "" }]);
   };
-  const handleSkillChange = (index, field, value) => {
-    const newSkills = [...skills];
-    newSkills[index][field] = value;
+  const removeSkills = (index) => {
+    const newSkills = skills.filter((_, i) => i !== index);
     setSkills(newSkills);
   };
 
-  // Experience Handlers
-  const handleAddExperience = () => {
-    setExperience([...experience, { title: "", company: "", description: "" }]);
-  };
-  const handleExperienceChange = (index, field, value) => {
-    const newExp = [...experience];
-    newExp[index][field] = value;
-    setExperience(newExp);
-  };
-
-  // Project Handlers
-  const handleAddProject = () => {
-    setProjects([...projects, { title: "", link: "", description: "" }]);
-  };
-  const handleProjectChange = (index, field, value) => {
+  const handleProjectsChange = (index, event) => {
     const newProjects = [...projects];
-    newProjects[index][field] = value;
+    newProjects[index][event.target.name] = event.target.value;
     setProjects(newProjects);
+  };
+  const addProjects = () => {
+    setProjects([
+      ...projects,
+      { title: "", company: "", years: 0, description: "" },
+    ]);
+  };
+  const removeProjects = (index) => {
+    const newProjects = projects.filter((_, i) => i !== index);
+    setProjects(newProjects);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("/api/users", {
+        name,
+        email,
+        universityName,
+        courseName,
+        experience,
+        skills,
+        LinkedInID,
+        GithubID,
+        projects,
+      });
+      console.log("Submitted successfully:", response.data);
+    } catch (err) {
+      console.error("Error submitting form:", err);
+    }
   };
 
   return (
     <div
-      className="max-w-2xl mx-auto p-6 rounded shadow"
-      style={{
-        backgroundColor: "#f3e2eb",
-        backgroundImage:
-          "url('https://www.transparenttextures.com/patterns/hexellence.png')",
-        backgroundRepeat: "repeat",
-        backgroundSize: "auto",
-        opacity: 0.98,
-      }}
+      className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-md mt-6"
+      style={{ backgroundColor: "#fdfdfd" }}
     >
-      <div className="max-w-2xl mx-auto bg-pink-100 p-6 rounded shadow">
-        <h2 className="text-3xl font-bold text-center text-pink-700 mb-6 drop-shadow-lg">
-          Edit Profile
-        </h2>
+      <h1
+        className="text-3xl font-bold mb-6 text-center text-purple-700"
+        style={{ color: "purple" }}
+      >
+        Edit Profile
+      </h1>
 
-        {/* Name */}
-        <label className="block font-semibold mb-1">Username</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full p-2 border rounded mb-4"
-          style={inputStyle}
-        />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block font-semibold">Username</label>
+          <input
+            type="text"
+            required
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-2 border rounded"
+          />
+        </div>
 
         <div>
           <label className="block font-semibold">Email</label>
@@ -256,32 +287,27 @@ export default function EditProfile() {
           />
         </div>
 
-        {/* Skills */}
-        <h3 className="text-2xl font-bold text-pink-700 mb-2 drop-shadow-md">
-          Skills
-        </h3>
-        {skills.map((skill, index) => (
-          <div key={index} className="mb-4">
-            <label className="block font-semibold">Skill Name</label>
-            <input
-              type="text"
-              value={skill.name}
-              onChange={(e) =>
-                handleSkillChange(index, "name", e.target.value)
-              }
-              placeholder="e.g., Next.js"
-              className="w-full p-2 border rounded mb-2"
-              style={inputStyle}
-            />
-            <label className="block font-semibold">Skill Level</label>
-            <select
-              value={skill.level}
-              onChange={(e) =>
-                handleSkillChange(index, "level", e.target.value)
-              }
-              className="w-full p-2 border rounded"
-              style={inputStyle}
-            >  {projects.length > 1 && (
+        <div>
+          <label className="block font-semibold">Github ID</label>
+          <input
+            type="text"
+            onChange={(e) => setGithubID(e.target.value)}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <h2
+            className="text-2xl font-bold text-purple-700"
+            style={{ color: "purple" }}
+          >
+            Projects
+          </h2>
+          {projects.map((project, index) => (
+            <div
+              key={index}
+              className="space-y-3 p-4 border border-gray-200 rounded-md relative bg-gray-50"
+            >
+              {projects.length > 1 && (
                 <button
                   type="button"
                   onClick={() => removeProjects(index)}
@@ -340,8 +366,14 @@ export default function EditProfile() {
           </button>
         </div>
 
-
-     
+        <button
+          type="submit"
+          className="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800 font-semibold"
+          style={{ backgroundColor: "purple" }}
+        >
+          Save Portfolio
+        </button>
+      </form>
     </div>
   );
 }
