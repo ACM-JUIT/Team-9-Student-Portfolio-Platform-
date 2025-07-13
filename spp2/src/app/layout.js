@@ -1,4 +1,4 @@
-// app/layout.js
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
@@ -46,6 +46,7 @@ export default function RootLayout({ children }) {
             zIndex: 50,
           }}
         >
+
           {/* Logo */}
           <Image
             src="/logo.png"
@@ -60,7 +61,8 @@ export default function RootLayout({ children }) {
             priority
           />
 
-          {/* Navigation */}
+
+          
           <nav style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
             <Link href="/" style={{ textDecoration: "none", color: "#be185d" }}>
               Home
@@ -77,6 +79,7 @@ export default function RootLayout({ children }) {
             >
               my profile
             </Link>
+
             <Link
               href="/editprofile"
               className="px-4 py-2 rounded-full font-semibold shadow hover:brightness-105 transition"
@@ -89,6 +92,7 @@ export default function RootLayout({ children }) {
             >
               Edit Profile
             </Link>
+
           </nav>
         </header>
 
