@@ -2,6 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,38 +46,53 @@ export default function RootLayout({ children }) {
             zIndex: 50,
           }}
         >
-          
-          <Link href="/" style={{ display: "flex", alignItems: "center" }}>
-            <img
-              src="/logo.png"
-              alt="SkillSync Logo"
-              style={{
-                height: "90px",
-                width: "auto",
-                objectFit: "contain",
-              }}
-            />
-          </Link>
+
+          {/* Logo */}
+          <Image
+            src="/logo.png"
+            alt="SkillSync Logo"
+            height={90}
+            width={180}
+            style={{
+              height: "90px",
+              width: "auto",
+              objectFit: "contain",
+            }}
+            priority
+          />
+
 
           
           <nav style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
             <Link href="/" style={{ textDecoration: "none", color: "#be185d" }}>
               Home
             </Link>
-            <Link href="/explore" style={{ textDecoration: "none", color: "#be185d" }}>
+            <Link
+              href="/explore"
+              style={{ textDecoration: "none", color: "#be185d" }}
+            >
               Explore
             </Link>
-            <Link href="/myprofile" style={{ textDecoration: "none", color: "#be185d" }}>
+            <Link
+              href="/myprofile"
+              style={{ textDecoration: "none", color: "#be185d" }}
+            >
               my profile
             </Link>
-            <button className="btn btn-primary bg-amber-400 hover:bg-amber-500 text-white px-4 py-2 rounded">
-              <Link
-                href="/editprofile"
-                style={{ textDecoration: "none", color: "white" }}
-              >
-                Edit Profile
-              </Link>
-            </button>
+
+            <Link
+              href="/editprofile"
+              className="px-4 py-2 rounded-full font-semibold shadow hover:brightness-105 transition"
+              style={{
+                backgroundColor: "#facc15",
+                color: "#7c2d12",
+                textDecoration: "none",
+                fontSize: "0.95rem",
+              }}
+            >
+              Edit Profile
+            </Link>
+
           </nav>
         </header>
 
@@ -103,7 +119,8 @@ export default function RootLayout({ children }) {
             marginTop: "3rem",
           }}
         >
-          &copy; {new Date().getFullYear()} <strong>SkillSync</strong> — Made with ❤️ using Next.js
+          &copy; {new Date().getFullYear()} <strong>SkillSync</strong> — All
+          rights reserved.
         </footer>
       </body>
     </html>
