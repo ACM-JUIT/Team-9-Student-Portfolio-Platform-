@@ -1,359 +1,222 @@
 "use client";
 import React, { useState } from "react";
-import axios from "axios";
 
 export default function EditProfile() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [universityName, setUniversityName] = useState("");
-  const [courseName, setCourseName] = useState("");
-  const [experience, setExperience] = useState([
-    { title: "", company: "", years: 0, description: "" },
-  ]);
   const [skills, setSkills] = useState([{ name: "", level: "" }]);
-  const [LinkedInID, setLinkedInID] = useState("");
-  const [GithubID, setGithubID] = useState("");
+  const [experience, setExperience] = useState([
+    { title: "", company: "", description: "" },
+  ]);
   const [projects, setProjects] = useState([
-    { title: "", description: "", link: "" },
+    { title: "", link: "", description: "" },
   ]);
 
-  const handleExperienceChange = (index, event) => {
-    const newExperience = [...experience];
-    newExperience[index][event.target.name] = event.target.value;
-    setExperience(newExperience);
-  };
-  const addExperience = () => {
-    setExperience([
-      ...experience,
-      { title: "", company: "", years: 0, description: "" },
-    ]);
-  };
-  const removeExperience = (index) => {
-    const newExperience = experience.filter((_, i) => i !== index);
-    setExperience(newExperience);
+  const inputStyle = {
+    backgroundColor: "#f3e2eb",
   };
 
-  const handleSkillChange = (index, event) => {
-    const newSkills = [...skills];
-    newSkills[index][event.target.name] = event.target.value;
-    setSkills(newSkills);
-  };
-  const addSkills = () => {
+  // Skills Handlers
+  const handleAddSkill = () => {
     setSkills([...skills, { name: "", level: "" }]);
   };
-  const removeSkills = (index) => {
-    const newSkills = skills.filter((_, i) => i !== index);
+  const handleSkillChange = (index, field, value) => {
+    const newSkills = [...skills];
+    newSkills[index][field] = value;
     setSkills(newSkills);
   };
 
-  const handleProjectsChange = (index, event) => {
+  // Experience Handlers
+  const handleAddExperience = () => {
+    setExperience([...experience, { title: "", company: "", description: "" }]);
+  };
+  const handleExperienceChange = (index, field, value) => {
+    const newExp = [...experience];
+    newExp[index][field] = value;
+    setExperience(newExp);
+  };
+
+  // Project Handlers
+  const handleAddProject = () => {
+    setProjects([...projects, { title: "", link: "", description: "" }]);
+  };
+  const handleProjectChange = (index, field, value) => {
     const newProjects = [...projects];
-    newProjects[index][event.target.name] = event.target.value;
+    newProjects[index][field] = value;
     setProjects(newProjects);
-  };
-  const addProjects = () => {
-    setProjects([
-      ...projects,
-      { title: "", company: "", years: 0, description: "" },
-    ]);
-  };
-  const removeProjects = (index) => {
-    const newProjects = projects.filter((_, i) => i !== index);
-    setProjects(newProjects);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("/api/users", {
-        name,
-        email,
-        universityName,
-        courseName,
-        experience,
-        skills,
-        LinkedInID,
-        GithubID,
-        projects,
-      });
-      console.log("Submitted successfully:", response.data);
-    } catch (err) {
-      console.error("Error submitting form:", err);
-    }
   };
 
   return (
     <div
-      className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-md mt-6"
-      style={{ backgroundColor: "#fdfdfd" }}
+      className="max-w-2xl mx-auto p-6 rounded shadow"
+      style={{
+        backgroundColor: "#f3e2eb",
+        backgroundImage:
+          "url('https://www.transparenttextures.com/patterns/hexellence.png')",
+        backgroundRepeat: "repeat",
+        backgroundSize: "auto",
+        opacity: 0.98,
+      }}
     >
-      <h1
-        className="text-3xl font-bold mb-6 text-center text-purple-700"
-        style={{ color: "purple" }}
-      >
-        Edit Profile
-      </h1>
+      <div className="max-w-2xl mx-auto bg-pink-100 p-6 rounded shadow">
+        <h2 className="text-3xl font-bold text-center text-pink-700 mb-6 drop-shadow-lg">
+          Edit Profile
+        </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-semibold">Username</label>
-          <input
-            type="text"
-            required
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
+        {/* Name */}
+        <label className="block font-semibold mb-1">Username</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full p-2 border rounded mb-4"
+          style={inputStyle}
+        />
 
-        <div>
-          <label className="block font-semibold">Email</label>
-          <input
-            type="email"
-            required
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <h2
-            className="text-2xl font-bold text-purple-700"
-            style={{ color: "purple" }}
-          >
-            Skills
-          </h2>
-          <>
-            {skills.map((skill, index) => (
-              <div
-                key={index}
-                className="space-y-3 p-4 border border-gray-200 rounded-md relative bg-gray-50"
-              >
-                {skills.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeSkills(index)}
-                    className="absolute top-2 right-2 text-red-600 hover:text-red-800 text-xl font-bold"
-                    aria-label={`Remove skill ${index + 1}`}
-                  >
-                    &times;
-                  </button>
-                )}
-                <div>
-                  <label className="block font-semibold text-gray-700">
-                    Skill Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="e.g.,Next.js"
-                    value={skill.name}
-                    onChange={(e) => handleSkillChange(index, e)}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-gray-700">
-                    Skill Level
-                  </label>
-                  <select
-                    name="level"
-                    value={skill.level}
-                    onChange={(e) => handleSkillChange(index, e)}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="">Select level</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                  </select>
-                </div>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={addSkills}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
+        {/* Email */}
+        <label className="block font-semibold mb-1">Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 border rounded mb-6"
+          style={inputStyle}
+        />
+
+        {/* Skills */}
+        <h3 className="text-2xl font-bold text-pink-700 mb-2 drop-shadow-md">
+          Skills
+        </h3>
+        {skills.map((skill, index) => (
+          <div key={index} className="mb-4">
+            <label className="block font-semibold">Skill Name</label>
+            <input
+              type="text"
+              value={skill.name}
+              onChange={(e) =>
+                handleSkillChange(index, "name", e.target.value)
+              }
+              placeholder="e.g., Next.js"
+              className="w-full p-2 border rounded mb-2"
+              style={inputStyle}
+            />
+            <label className="block font-semibold">Skill Level</label>
+            <select
+              value={skill.level}
+              onChange={(e) =>
+                handleSkillChange(index, "level", e.target.value)
+              }
+              className="w-full p-2 border rounded"
+              style={inputStyle}
             >
-              Add More Skill
-            </button>
-            <hr className="border-gray-200" />
-          </>
-          <h2
-            className="text-2xl font-bold text-purple-700"
-            style={{ color: "purple" }}
-          >
-            Experience
-          </h2>
-          {experience.map((exp, index) => (
-            <div
-              key={index}
-              className="space-y-3 p-4 border border-gray-200 rounded-md relative bg-gray-50"
-            >
-              {experience.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeExperience(index)}
-                  className="absolute top-2 right-2 text-red-600 hover:text-red-800 text-xl font-bold"
-                  aria-label={`Remove experience ${index + 1}`}
-                >
-                  &times;
-                </button>
-              )}
-              <div>
-                <label className="block font-semibold text-gray-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="e.g., Frontend Intern"
-                  value={exp.title}
-                  onChange={(e) => handleExperienceChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700">
-                  Company
-                </label>
-                <input
-                  type="text"
-                  name="company"
-                  placeholder="e.g., Google"
-                  value={exp.company}
-                  onChange={(e) => handleExperienceChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700">
-                  Years (e.g., 2)
-                </label>
-                <input
-                  type="number"
-                  name="years"
-                  placeholder="Years"
-                  value={exp.years}
-                  onChange={(e) => handleExperienceChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  placeholder="Briefly describe your responsibilities..."
-                  value={exp.description}
-                  onChange={(e) => handleExperienceChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded-md min-h-[80px]"
-                />
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addExperience}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
-          >
-            Add More Experience
-          </button>
-        </div>
-        <div>
-          <label className="block font-semibold">LinkedIn ID</label>
-          <input
-            type="text"
-            onChange={(e) => setLinkedInID(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold">Github ID</label>
-          <input
-            type="text"
-            onChange={(e) => setGithubID(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <h2
-            className="text-2xl font-bold text-purple-700"
-            style={{ color: "purple" }}
-          >
-            Projects
-          </h2>
-          {projects.map((project, index) => (
-            <div
-              key={index}
-              className="space-y-3 p-4 border border-gray-200 rounded-md relative bg-gray-50"
-            >
-              {projects.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeProjects(index)}
-                  className="absolute top-2 right-2 text-red-600 hover:text-red-800 text-xl font-bold"
-                  aria-label={`Remove project ${index + 1}`}
-                >
-                  &times;
-                </button>
-              )}
-              <div>
-                <label className="block font-semibold text-gray-700">
-                  Project Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="e.g., E-commerce Website"
-                  value={project.title}
-                  onChange={(e) => handleProjectChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  placeholder="Briefly describe your project..."
-                  value={project.description}
-                  onChange={(e) => handleProjectChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded-md min-h-[80px]"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-gray-700">
-                  Project Link
-                </label>
-                <input
-                  type="text"
-                  name="link"
-                  placeholder="e.g., https://github.com/yourproject"
-                  value={project.link}
-                  onChange={(e) => handleProjectChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addProjects}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
-          >
-            Add More Project
-          </button>
-        </div>
-
+              <option value="">Select level</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+        ))}
         <button
-          type="submit"
-          className="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800 font-semibold"
-          style={{ backgroundColor: "purple" }}
+          onClick={handleAddSkill}
+          className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 mb-6"
         >
-          Save Portfolio
+          Add More Skill
         </button>
-      </form>
+
+        {/* Experience */}
+        <h3 className="text-2xl font-bold text-pink-700 mb-2 drop-shadow-md">
+          Experience
+        </h3>
+        {experience.map((exp, index) => (
+          <div key={index} className="mb-4">
+            <label className="block font-semibold">Title</label>
+            <input
+              type="text"
+              value={exp.title}
+              onChange={(e) =>
+                handleExperienceChange(index, "title", e.target.value)
+              }
+              placeholder="e.g., Frontend Intern"
+              className="w-full p-2 border rounded mb-2"
+              style={inputStyle}
+            />
+            <label className="block font-semibold">Company</label>
+            <input
+              type="text"
+              value={exp.company}
+              onChange={(e) =>
+                handleExperienceChange(index, "company", e.target.value)
+              }
+              placeholder="e.g., Google"
+              className="w-full p-2 border rounded mb-2"
+              style={inputStyle}
+            />
+            <label className="block font-semibold">Description</label>
+            <textarea
+              value={exp.description}
+              onChange={(e) =>
+                handleExperienceChange(index, "description", e.target.value)
+              }
+              placeholder="Describe your work"
+              className="w-full p-2 border rounded"
+              style={inputStyle}
+            />
+          </div>
+        ))}
+        <button
+          onClick={handleAddExperience}
+          className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 mb-6"
+        >
+          Add More Experience
+        </button>
+
+        {/* Projects */}
+        <h3 className="text-2xl font-bold text-pink-700 mb-2 drop-shadow-md">
+          Projects
+        </h3>
+        {projects.map((project, index) => (
+          <div key={index} className="mb-4">
+            <label className="block font-semibold">Project Title</label>
+            <input
+              type="text"
+              value={project.title}
+              onChange={(e) =>
+                handleProjectChange(index, "title", e.target.value)
+              }
+              placeholder="e.g., Portfolio Website"
+              className="w-full p-2 border rounded mb-2"
+              style={inputStyle}
+            />
+            <label className="block font-semibold">Project Link</label>
+            <input
+              type="url"
+              value={project.link}
+              onChange={(e) =>
+                handleProjectChange(index, "link", e.target.value)
+              }
+              placeholder="https://github.com/..."
+              className="w-full p-2 border rounded mb-2"
+              style={inputStyle}
+            />
+            <label className="block font-semibold">Description</label>
+            <textarea
+              value={project.description}
+              onChange={(e) =>
+                handleProjectChange(index, "description", e.target.value)
+              }
+              placeholder="Short description"
+              className="w-full p-2 border rounded"
+              style={inputStyle}
+            />
+          </div>
+        ))}
+        <button
+          onClick={handleAddProject}
+          className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600"
+        >
+          Add More Project
+        </button>
+      </div>
     </div>
   );
 }

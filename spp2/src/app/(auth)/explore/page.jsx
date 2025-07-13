@@ -23,6 +23,84 @@ export default function Explore() {
     fetchUsers();
   }, []);
 
+  /*useEffect(() => {
+    // Simulated fetch with mock data
+    const fetchMockUsers = async () => {
+      try {
+        const mockData = [
+          {
+            _id: "1",
+            name: "Ananya",
+            universityName: "Delhi Technological University",
+            courseName: "B.Tech in Computer Engineering",
+          },
+          {
+            _id: "2",
+            name: "Navya",
+            universityName: "IIT Bombay",
+            courseName: "M.Tech in UI/UX Design",
+          },
+          {
+            _id: "3",
+            name: "Yashvi",
+            universityName: "BITS Pilani",
+            courseName: "B.E. in Information Systems",
+          },
+        ];
+
+        // Mimic API delay
+        await new Promise((res) => setTimeout(res, 1000));
+        setUsers(mockData);
+      } catch (err) {
+        console.error("Error fetching users for Explore page:", err);
+        setError("Failed to load users. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMockUsers();
+  }, []);
+
+  /*
+  useEffect(() => {
+    const fetchMockUsers = async () => {
+      try {
+        const mockData = [
+          {
+            _id: "1",
+            name: "Ananya",
+            universityName: "Delhi Technological University",
+            courseName: "B.Tech in Computer Engineering",
+          },
+          {
+            _id: "2",
+            name: "Navya",
+            universityName: "IIT Bombay",
+            courseName: "M.Tech in UI/UX Design",
+          },
+          {
+            _id: "3",
+            name: "Yashvi",
+            universityName: "BITS Pilani",
+            courseName: "B.E. in Information Systems",
+          },
+        ];
+
+        // Mimic API delay
+        await new Promise((res) => setTimeout(res, 1000));
+        setUsers(mockData);
+      } catch (err) {
+        console.error("Error fetching users for Explore page:", err);
+        setError("Failed to load users. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMockUsers();
+  }, []);*/
+
   if (loading) {
     return (
       <div

@@ -8,7 +8,7 @@ export default function MyProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // added error state
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get("/api/users"); // update if API returns array
@@ -22,9 +22,9 @@ export default function MyProfilePage() {
     };
 
     fetchUser();
-  }, []);
+  }, []);*/
 
-  /*useEffect(() => {
+  useEffect(() => {
     const mockUser = {
       name: "Yashvi ",
       email: "yashvi@example.com",
@@ -70,7 +70,7 @@ export default function MyProfilePage() {
       setUser(mockUser);
       setLoading(false);
     }, 800);
-  }, []);*/
+  }, []);
   
 
   if (loading) return <div style={styles.loading}>Loading profile...</div>;
