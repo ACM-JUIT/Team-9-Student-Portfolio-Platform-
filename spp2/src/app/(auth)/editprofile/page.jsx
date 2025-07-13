@@ -113,6 +113,26 @@ export default function EditProfile() {
             className="w-full p-2 border rounded"
           />
         </div>
+
+        <div>
+          <label className="block font-semibold">UniversityName</label>
+          <input
+            type="text"
+            required
+            onChange={(e) => setUniversityName(e.target.value)}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-semibold">Course</label>
+          <input
+            type="text"
+            required
+            onChange={(e) => setCourseName(e.target.value)}
+            className="w-full p-2 border rounded"
+          />
+        </div>
         <div>
           <h2
             className="text-2xl font-bold text-purple-700"
@@ -306,7 +326,7 @@ export default function EditProfile() {
                   name="title"
                   placeholder="e.g., E-commerce Website"
                   value={project.title}
-                  onChange={(e) => handleProjectChange(index, e)}
+                  onChange={(e) => handleProjectsChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
@@ -318,7 +338,7 @@ export default function EditProfile() {
                   name="description"
                   placeholder="Briefly describe your project..."
                   value={project.description}
-                  onChange={(e) => handleProjectChange(index, e)}
+                  onChange={(e) => handleProjectsChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded-md min-h-[80px]"
                 />
               </div>
@@ -331,7 +351,7 @@ export default function EditProfile() {
                   name="link"
                   placeholder="e.g., https://github.com/yourproject"
                   value={project.link}
-                  onChange={(e) => handleProjectChange(index, e)}
+                  onChange={(e) => handleProjectsChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded-md"
                 />
               </div>
