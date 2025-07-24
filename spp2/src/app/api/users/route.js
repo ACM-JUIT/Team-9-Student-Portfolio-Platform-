@@ -1,11 +1,26 @@
 import connectionToDatabase from "@/lib/mongoose";
 import User from "@/models/Users";
 import { NextResponse } from "next/server";
+
 export async function GET(request) {
   try {
     await connectionToDatabase();
-    const users = await User.find({});
-    return NextResponse.json(users, { status: 200 });
+    const { searchParams } = new URL(request.url);
+    const userid = searchParams.get("userid");
+
+    if (userid) {
+      const user = await User.findById(userid);
+      if (!user) {
+        return NextResponse.json(
+          { message: "User not found" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(user, { status: 200 });
+    } else {
+      const users = await User.find({});
+      return NextResponse.json(users, { status: 200 });
+    }
   } catch (err) {
     console.log("Error in GET /api/users:", err);
     return NextResponse.json(
@@ -14,6 +29,7 @@ export async function GET(request) {
     );
   }
 }
+
 export async function POST(request) {
   try {
     await connectionToDatabase();
@@ -28,6 +44,16 @@ export async function POST(request) {
       GithubID,
       projects,
     } = await request.json();
+
+    // Optional: Check if user already exists by email
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "User already exists" },
+        { status: 409 }
+      );
+    }
+
     const newUser = new User({
       name,
       email,
@@ -49,6 +75,8 @@ export async function POST(request) {
     );
   }
 }
+
+// PUT: Update user by email
 export async function PUT(request) {
   try {
     await connectionToDatabase();
@@ -66,7 +94,7 @@ export async function PUT(request) {
 
     if (!email) {
       return NextResponse.json(
-        { message: "User ID needs an update" },
+        { message: "Email is required for update" },
         { status: 400 }
       );
     }

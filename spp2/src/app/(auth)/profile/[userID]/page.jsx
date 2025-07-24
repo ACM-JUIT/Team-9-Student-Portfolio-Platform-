@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { usePathname } from "next/navigation";
+import { usePathname, Link } from "next/navigation";
 
 export default function UserProfileDynamicPage() {
   const [user, setUser] = useState(null);
@@ -9,10 +9,10 @@ export default function UserProfileDynamicPage() {
   const [error, setError] = useState(null);
   const pathname = usePathname();
 
-  const userId = pathname.split("/").pop();
+  const userid = pathname.split("/").pop();
 
   useEffect(() => {
-    if (!userId) {
+    if (!userid) {
       setError("User ID not found in URL.");
       setLoading(false);
       return;
@@ -20,24 +20,22 @@ export default function UserProfileDynamicPage() {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get("/api/users");
-        const foundUser = response.data.find((u) => u._id === userId);
-
-        if (foundUser) {
-          setUser(foundUser);
-        } else {
-          setError("User profile not found.");
-        }
+        const response = await axios.get(`/api/users?userid=${userid}`);
+        setUser(response.data);
       } catch (err) {
-        console.error("Failed to fetch user profile:", err);
-        setError("Failed to load profile. Please try again later.");
+        console.error("Error fetching user profile:", err);
+        if (err.response && err.response.status === 404) {
+          setError("User profile not found.");
+        } else {
+          setError("An error occurred while fetching the user profile.");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchUserProfile();
-  }, [userId]);
+  }, [userid]);
 
   if (loading) {
     return (
