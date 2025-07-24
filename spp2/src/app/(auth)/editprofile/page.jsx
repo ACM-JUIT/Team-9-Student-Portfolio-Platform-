@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 export default function EditProfile() {
   const searchParams = useSearchParams();
-  const urluserId = searchParams.get("userId");
+  const urluserId = searchParams.get("userid"); // <-- use 'userid' lowercase
   const [userId, setUserId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,13 +34,14 @@ export default function EditProfile() {
       try {
         let userToLoad = null;
         if (urluserId) {
-          const response = await axios.get(`/api/users/${userId}`);
+          // FIX: Use query param, not /:id
+          const response = await axios.get(`/api/users?userid=${urluserId}`);
           userToLoad = response.data;
           setMessage("Existing profile is loading ");
         } else {
           const response = await axios.get("/api/users");
           if (response.data && response.data.length > 0) {
-            userToLoad = response.data[0]; // Load the first user if no ID is provided
+            userToLoad = response.data[0];
             setMessage("Loading first user profile");
           } else {
             setMessage("No user profiles found.");
@@ -80,7 +81,7 @@ export default function EditProfile() {
     };
 
     fetchUserProfile();
-  }, [urluserId, userId]);
+  }, [urluserId]);
 
   const handleExperienceChange = (index, event) => {
     const newExperience = [...experience];
@@ -127,6 +128,10 @@ export default function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    if (!email) {
+      setMessage("Email is required to update your profile.");
+      return;
+    }
     const userData = {
       name,
       email,
@@ -141,15 +146,20 @@ export default function EditProfile() {
 
     try {
       if (userId) {
-        await axios.put(`/api/users/${userId}`, userData);
+        // Update existing user by email
+        await axios.put(`/api/users`, userData);
         setMessage("Profile updated successfully!");
       } else {
-        await axios.post("/api/users", userData);
+        // Create new user
+        await axios.post(`/api/users`, userData);
         setMessage("Profile created successfully!");
       }
     } catch (err) {
       console.error("Error saving profile:", err);
-      setMessage("An error occurred while saving the profile.");
+      setMessage(
+        err.response?.data?.error ||
+          "An error occurred while saving the profile."
+      );
     } finally {
       setLoadingInitialData(false);
     }
@@ -316,9 +326,9 @@ export default function EditProfile() {
                     className={inputAndSelectClasses}
                   >
                     <option value="">Select level</option>
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
                   </select>
                 </div>
               </div>
@@ -379,7 +389,7 @@ export default function EditProfile() {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-700 mb-1">
+                  <label className="block font-semibold mb-1 text-gray-700">
                     Years (e.g., 2)
                   </label>
                   <input

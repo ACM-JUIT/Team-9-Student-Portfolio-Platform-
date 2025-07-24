@@ -59,11 +59,13 @@ export async function POST(request) {
       email,
       universityName,
       courseName,
-      experience,
-      skills,
+      experience: experience.filter(
+        (e) => e.title || e.company || e.years || e.description
+      ),
+      skills: skills.filter((s) => s.name && s.level),
       LinkedInID,
       GithubID,
-      projects,
+      projects: projects.filter((p) => p.title || p.description || p.link),
     });
     await newUser.save();
     return NextResponse.json(newUser, { status: 201 });
@@ -120,8 +122,13 @@ export async function PUT(request) {
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (err) {
     console.log("Error in PUT /api/users:", err);
+    if (err.errors) {
+      for (const key in err.errors) {
+        console.log(`${key}: ${err.errors[key].message}`);
+      }
+    }
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: err.message || "Internal Server Error" },
       { status: 500 }
     );
   }
