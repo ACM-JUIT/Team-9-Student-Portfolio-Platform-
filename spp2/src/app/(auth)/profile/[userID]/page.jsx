@@ -195,6 +195,14 @@ export default function UserProfileDynamicPage() {
           </section>
         )}
       </div>
+      <Link href="">
+        <button
+          className="mt-6 px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300 font-semibold shadow-md flex items-center justify-center mx-auto text-lg hover:shadow-lg transform hover:scale-105 active:scale-95 focus:outline-none focus:ring
+      "
+        >
+          Edit Profile
+        </button>
+      </Link>
     </div>
   );
 }

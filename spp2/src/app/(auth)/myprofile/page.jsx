@@ -184,13 +184,15 @@ export default function MyProfilePage() {
           </section>
         )}
       </div>
-
       <div className="text-center mt-12">
-        <Link href="/editprofile" legacyBehavior>
-          <a className="inline-block bg-rose-600 text-white py-3 px-8 rounded-full text-lg font-bold transition-transform duration-200 hover:scale-105 shadow-lg">
+        {user._id && (
+          <Link
+            href={`/editprofile?userid=${user._id}`}
+            className="inline-block bg-rose-600 text-white py-3 px-8 rounded-full text-lg font-bold transition-transform duration-200 hover:scale-105 shadow-lg"
+          >
             Edit Profile
-          </a>
-        </Link>
+          </Link>
+        )}
       </div>
     </div>
   );
