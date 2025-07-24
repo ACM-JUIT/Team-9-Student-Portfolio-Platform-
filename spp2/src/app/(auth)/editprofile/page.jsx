@@ -1,8 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export default function EditProfile() {
+  const searchParams = useSearchParams();
+  const urluserId = searchParams.get("userId");
+  const [userId, setUserId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [universityName, setUniversityName] = useState("");
@@ -16,12 +21,66 @@ export default function EditProfile() {
   const [projects, setProjects] = useState([
     { title: "", description: "", link: "" },
   ]);
+  const [message, setMessage] = useState("");
+  const [loadingInitialData, setLoadingInitialData] = useState(true);
 
-  // Unified input style for repeated use
   const inputAndSelectClasses =
     "w-full p-2 border rounded-md mb-2 bg-pink-50 focus:ring-pink-400 focus:border-pink-400";
   const textareaClasses =
     "w-full p-2 border rounded-md bg-pink-50 min-h-[80px] focus:ring-pink-400 focus:border-pink-400";
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        let userToLoad = null;
+        if (urluserId) {
+          const response = await axios.get(`/api/users/${userId}`);
+          userToLoad = response.data;
+          setMessage("Existing profile is loading ");
+        } else {
+          const response = await axios.get("/api/users");
+          if (response.data && response.data.length > 0) {
+            userToLoad = response.data[0]; // Load the first user if no ID is provided
+            setMessage("Loading first user profile");
+          } else {
+            setMessage("No user profiles found.");
+          }
+        }
+
+        if (userToLoad) {
+          setUserId(userToLoad._id);
+          setName(userToLoad.name || "");
+          setEmail(userToLoad.email || "");
+          setUniversityName(userToLoad.universityName || "");
+          setCourseName(userToLoad.courseName || "");
+          setExperience(
+            userToLoad.experience && userToLoad.experience.length > 0
+              ? userToLoad.experience
+              : [{ title: "", company: "", years: 0, description: "" }]
+          );
+          setSkills(
+            userToLoad.skills && userToLoad.skills.length > 0
+              ? userToLoad.skills
+              : [{ name: "", level: "" }]
+          );
+          setProjects(
+            userToLoad.projects && userToLoad.projects.length > 0
+              ? userToLoad.projects
+              : [{ title: "", description: "", link: "" }]
+          );
+          setLinkedInID(userToLoad.LinkedInID || "");
+          setGithubID(userToLoad.GithubID || "");
+        }
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+        setMessage("An error occurred while fetching the user profile.");
+      } finally {
+        setLoadingInitialData(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, [urluserId, userId]);
 
   const handleExperienceChange = (index, event) => {
     const newExperience = [...experience];
@@ -67,32 +126,46 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
+    const userData = {
+      name,
+      email,
+      universityName,
+      courseName,
+      experience,
+      skills,
+      LinkedInID,
+      GithubID,
+      projects,
+    };
+
     try {
-      const response = await axios.post("/api/users", {
-        name,
-        email,
-        universityName,
-        courseName,
-        experience,
-        skills,
-        LinkedInID,
-        GithubID,
-        projects,
-      });
-      console.log("Submitted successfully:", response.data);
-      alert("Profile saved successfully!"); // User feedback
-      // Optionally redirect or clear form here
+      if (userId) {
+        await axios.put(`/api/users/${userId}`, userData);
+        setMessage("Profile updated successfully!");
+      } else {
+        await axios.post("/api/users", userData);
+        setMessage("Profile created successfully!");
+      }
     } catch (err) {
-      console.error("Error submitting form:", err);
-      alert("Failed to save profile. Please try again."); // User feedback
+      console.error("Error saving profile:", err);
+      setMessage("An error occurred while saving the profile.");
+    } finally {
+      setLoadingInitialData(false);
     }
   };
-
+  if (loadingInitialData) {
+    return (
+      <div className="max-w-3xl mx-auto p-6 text-gray-800 text-center">
+        Loading profile data...
+      </div>
+    );
+  }
   return (
     <div
       className="max-w-3xl mx-auto p-6 rounded-lg shadow-xl text-gray-800"
       style={{
-        backgroundColor: "#f3e2eb", // Matches the lighter pink background
+        backgroundColor: "#f3e2eb",
         backgroundImage:
           "url('https://www.transparenttextures.com/patterns/hexellence.png')",
         backgroundRepeat: "repeat",
@@ -104,6 +177,17 @@ export default function EditProfile() {
         <h2 className="text-4xl font-extrabold text-center text-pink-700 mb-8 drop-shadow-md">
           Edit Profile
         </h2>
+        {message && (
+          <div
+            className={`p-3 mb-4 rounded-md text-sm ${
+              message.startsWith("Error")
+                ? "bg-red-100 text-red-700"
+                : "bg-green-100 text-green-700"
+            }`}
+          >
+            {message}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
