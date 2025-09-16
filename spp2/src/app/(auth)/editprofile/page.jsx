@@ -1,10 +1,10 @@
 "use client";
-import React, { use, useState } from "react";
+import React, { use, useState, Suspense } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
-export default function EditProfile() {
+function EditProfileContent() {
   const searchParams = useSearchParams();
   const urluserId = searchParams.get("userid"); // <-- use 'userid' lowercase
   const [userId, setUserId] = useState("");
@@ -505,5 +505,13 @@ export default function EditProfile() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function EditProfile() {
+  return (
+    <Suspense fallback={<div className="max-w-3xl mx-auto p-6 text-gray-800 text-center">Loading profile editor...</div>}>
+      <EditProfileContent />
+    </Suspense>
   );
 }

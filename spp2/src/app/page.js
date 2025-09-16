@@ -37,9 +37,15 @@ export default function HomePage() {
           Unleash Your Potential. <br /> Showcase Your Journey.
         </h1>
 
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            Hello! Welcome to SkillSync
+          </h2>
+        </div>
+        
         <p className="text-md text-gray-700 max-w-xl mx-auto leading-relaxed">
           Showcase your awesome academic and professional journey, <br />
-          connect with peers, discover new talents. It's like your personal <br />
+          connect with peers, discover new talents. It&apos;s like your personal <br />
           portfolio gallery, for your skills and projects!
         </p>
       </div>

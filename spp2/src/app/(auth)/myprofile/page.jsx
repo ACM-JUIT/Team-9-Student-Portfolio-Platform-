@@ -54,8 +54,9 @@ export default function MyProfilePage() {
     <div className="font-poppins p-8 max-w-4xl mx-auto text-gray-700">
       <div className="text-center mb-8">
         <h1 className="text-4xl mt-4 mb-2 font-extrabold text-pink-700 drop-shadow-lg">
-          {user.name || "My Profile"}
+          Hello, {user.name || "Guest"}!
         </h1>
+        <p className="text-lg text-gray-600 mb-4">Welcome to your profile</p>
         <div className="w-20 h-20 bg-gradient-to-br from-pink-300 to-rose-500 rounded-full text-5xl text-white font-bold mx-auto flex items-center justify-center shadow-md">
           {user.name ? user.name.charAt(0).toUpperCase() : "?"}
         </div>
